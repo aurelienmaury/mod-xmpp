@@ -1,0 +1,13 @@
+{
+  // Compiled Groovy verticle - note that they must be prefixed with 'groovy:' to distinguish them from compiled Java verticles
+  "main":"groovy:org.eu.galaxie.vertx.mod.xmpp.MainVerticle",
+
+  // If your module is going to be registered in the Vert.x module registry you will also need the following
+  // mandatory fields
+  "description":"Simple XMPP Gate module",
+  "licenses": ["Do What The Fuck You Want To Public License Version 2.0"],
+  "author": "Aurélien Maury",
+
+  "keywords": ["gerbils", "cars", "cheese", "chocolate", "underpants", "herring"],
+  "homepage": "url to your project page"
+}
