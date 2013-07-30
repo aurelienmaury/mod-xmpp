@@ -10,8 +10,8 @@ class MainVerticle extends Verticle {
         def conf = [
                 host: container.config.host ?: 'localhost',
                 port: container.config.port?.toInteger() ?: 5222,
-                login: container.config.login ?: '',
-                password: container.config.password ?: ''
+                login: container.config.login ?: 'user1@localhost',
+                password: container.config.password ?: 'user1'
         ]
         
         XmppConnector connector = new XmppConnector(conf.host, conf.port, conf.login, conf.password, vertx.eventBus)
