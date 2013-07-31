@@ -17,6 +17,14 @@ package com.mycompany.myproject.test.integration.groovy;
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
 
+import org.apache.vysper.mina.TCPEndpoint;
+import org.apache.vysper.storage.inmemory.MemoryStorageProviderRegistry;
+import org.apache.vysper.xmpp.addressing.EntityImpl;
+import org.apache.vysper.xmpp.authorization.AccountManagement;
+import org.apache.vysper.xmpp.server.XMPPServer;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.vertx.testtools.ScriptClassRunner;
@@ -31,10 +39,29 @@ import org.vertx.testtools.TestVerticleInfo;
  *
  * You do not need to edit this file unless you want it to look for tests elsewhere
  */
-@TestVerticleInfo(filenameFilter=".+\\.groovy", funcRegex="def[\\s]+(test[^\\s(]+)")
+@TestVerticleInfo(filenameFilter = ".+\\.groovy", funcRegex = "def[\\s]+(test[^\\s(]+)")
 @RunWith(ScriptClassRunner.class)
 public class GroovyIntegrationTests {
-  @Test
-  public void __vertxDummy() {
-  }
+
+    static XMPPServer server
+
+    @BeforeClass
+    static void setUp() {
+        server = new XMPPServer('localhost')
+        server.storageProviderRegistry = new MemoryStorageProviderRegistry()
+        server.setTLSCertificateInfo(this.class.getResourceAsStream('/keystore.jks'), '123456')
+        server.addEndpoint(new TCPEndpoint())
+        AccountManagement accountManagement = (AccountManagement) server.storageProviderRegistry.retrieve(AccountManagement)
+        accountManagement.addUser(EntityImpl.parse('user1@localhost'), 'password1')
+        server.start()
+    }
+
+    @AfterClass
+    static void tearDown() {
+        server.stop()
+    }
+
+    @Test
+    public void __vertxDummy() {
+    }
 }

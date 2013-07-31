@@ -62,6 +62,9 @@ dependencies {
     // If you're creating Groovy compiled verticles you may need the following dependencies
     provided "org.codehaus.groovy:groovy-all:$groovyVersion"
     provided "io.vertx:lang-groovy:$groovyLangModVersion@jar"
+
+    testCompile 'org.apache.vysper:vysper-core:0.7'
+
 }
 
 test {

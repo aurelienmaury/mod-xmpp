@@ -6,22 +6,23 @@ import org.vertx.java.core.json.impl.Json
 class MainVerticle extends Verticle {
 
     def start() {
+        println "=====> STARTING"
 
         def conf = [
                 host: container.config.host ?: 'localhost',
                 port: container.config.port?.toInteger() ?: 5222,
-                login: container.config.login ?: 'user1@hugin',
-                password: container.config.password ?: 'user1'
+                login: container.config.login ?: 'user1@localhost',
+                password: container.config.password ?: 'password1'
         ]
         
         XmppConnector connector = new XmppConnector(conf.host, conf.port, conf.login, conf.password, vertx.eventBus)
 
         vertx.eventBus.registerHandler('xmpp.send') { msg ->
-
+msg.reply('pong!') /*
             def payload = Json.encode([target: msg.body.target, replyTo: msg.body.replyTo, body: Json.encode(msg.body.body)])
 
             connector.sendMessage(payload, msg.body.to)
-            println "SENT"
+            println "SENT"*/
         }
     }
 }
