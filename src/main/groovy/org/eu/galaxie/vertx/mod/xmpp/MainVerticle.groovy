@@ -53,6 +53,5 @@ class MainVerticle extends Verticle {
         } catch (Exception e) {
             e.printStackTrace()
         }
-
     }
 }
