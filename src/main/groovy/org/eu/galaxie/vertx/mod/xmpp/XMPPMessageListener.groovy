@@ -8,23 +8,33 @@ import org.vertx.java.core.json.impl.Json
 
 class XMPPMessageListener implements MessageListener {
 
-    EventBus eventBus
+    private EventBus eventBus
+
+    XMPPMessageListener(EventBus eventBus) {
+        this.eventBus = eventBus
+    }
 
     void processMessage(Chat chat, Message message) {
 
         if (message.type == Message.Type.chat) {
-
-            def fromUser = message.from
-            println "RECEIVED from ${fromUser}"
-
-
-            def jsonContent = Json.decodeValue(message.body, Map.class)
-
-            eventBus.send('xmpp.incoming.' + jsonContent.to, [
-                    from: jsonContent.from,
-                    to: jsonContent.to,
-                    content: Json.decodeValue(jsonContent.content, Map.class)
-            ])
+            try {
+                def jsonContent = decodeMessage(message.body)
+                eventBus.send('xmpp.incoming.' + jsonContent.to, jsonContent)
+            } catch (Exception e) {
+                e.printStackTrace()
+            }
         }
+    }
+
+    Map decodeMessage(String xmppMessageContent) {
+
+        def jsonContent = Json.decodeValue(xmppMessageContent, Map.class)
+        jsonContent.content = Json.decodeValue(jsonContent.content, Map.class)
+
+        if (!jsonContent.from || !jsonContent.to || !jsonContent.content) {
+            throw new IllegalArgumentException("Malformed incoming message")
+        }
+
+        jsonContent
     }
 }

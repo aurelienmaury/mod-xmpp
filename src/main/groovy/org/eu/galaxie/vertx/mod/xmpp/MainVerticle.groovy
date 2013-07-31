@@ -28,27 +28,24 @@ class MainVerticle extends Verticle {
             def conf = readConf(container.config)
 
             connectionCache = new LRUCache(20)
-            listener = new XMPPMessageListener(eventBus: vertx.eventBus)
+            listener = new XMPPMessageListener(vertx.eventBus)
             connectionFactory = new ConnectionFactory(conf.host, conf.port, listener)
 
-            vertx.eventBus.registerHandler('xmpp.login') { loginMessage ->
-                println "CONNECTION REQUIRED for ${loginMessage.body.login}"
-                String login = loginMessage.body.login
-                String password = loginMessage.body.password
+            vertx.eventBus.registerHandler('xmpp.login') { message ->
+                String login = message.body.login
+                String password = message.body.password
                 connectionCache.put(login, connectionFactory.connect(login, password))
             }
 
-            vertx.eventBus.registerHandler('xmpp.send') { msg ->
-                println "SEND REQUIRED for ${msg.body.from}"
-
+            vertx.eventBus.registerHandler('xmpp.send') { message ->
                 def payload = Json.encode([
-                        from: msg.body.from + '@' + conf.host,
-                        to: msg.body.to,
-                        content: Json.encode(msg.body.content)
+                        from: message.body.from + '@' + conf.host,
+                        to: message.body.to,
+                        content: Json.encode(message.body.content)
                 ])
 
-                XMPPConnection connection = connectionCache.get(msg.body.from)
-                connection.getChatManager().createChat(msg.body.to, listener).sendMessage(payload)
+                XMPPConnection connection = connectionCache.get(message.body.from)
+                connection.getChatManager().createChat(message.body.to, listener).sendMessage(payload)
             }
         } catch (Exception e) {
             e.printStackTrace()
