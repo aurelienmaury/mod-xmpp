@@ -53,6 +53,7 @@ public class GroovyIntegrationTests {
         server.addEndpoint(new TCPEndpoint())
         AccountManagement accountManagement = (AccountManagement) server.storageProviderRegistry.retrieve(AccountManagement)
         accountManagement.addUser(EntityImpl.parse('user1@localhost'), 'password1')
+        accountManagement.addUser(EntityImpl.parse('user2@localhost'), 'password2')
         server.start()
     }
 

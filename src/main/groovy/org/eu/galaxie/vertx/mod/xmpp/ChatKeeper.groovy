@@ -12,7 +12,7 @@ class ChatKeeper {
 
     XMPPConnection connection
 
-    XmppMessageListener messageListener
+    XMPPMessageListener messageListener
 
     Chat getAt(String key) {
         if (!chatCache.get(key)) {
